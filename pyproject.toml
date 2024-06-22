@@ -38,6 +38,7 @@ dependencies = [
     "transformers",
     "datasets",
     "tokenizers",
+    "av",
 ]
 dynamic = ["version"]
 
