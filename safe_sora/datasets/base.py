@@ -40,9 +40,7 @@ __all__ = [
 
 def is_complete(data_dict: dict) -> bool:
     """Check if a dictionary is complete, i.e., all values are not None."""
-    for key, value in data_dict.items():
-        if key == 'info':
-            continue
+    for _, value in data_dict.items():
         if isinstance(value, dict) and not is_complete(value):
             return False
         if value is None:
@@ -153,7 +151,6 @@ class VideoSample(TypedDict):
     is_safe: NotRequired[bool]
     video_labels: NotRequired[HarmLabel]
     generated_from: NotRequired[str]
-    info: NotRequired[dict]
 
 
 def format_video_sample_from_dict(data: dict, contain_labels: bool = False) -> VideoSample:
@@ -183,7 +180,6 @@ def format_video_sample_from_dict(data: dict, contain_labels: bool = False) -> V
             is_safe=data.get('is_safe'),
             video_labels=video_labels,
             generated_from=data.get('generated_from'),
-            info=data.get('info', {}),
         )
 
     return VideoSample(
@@ -195,7 +191,6 @@ def format_video_sample_from_dict(data: dict, contain_labels: bool = False) -> V
         video_path=data.get('video_path'),
         is_safe=data.get('is_safe'),
         generated_from=data.get('generated_from'),
-        info=data.get('info', {}),
     )
 
 
@@ -236,7 +231,6 @@ class VideoPairSample(TypedDict):
     helpfulness: NotRequired[Literal['video_0', 'video_1']]
     harmlessness: NotRequired[Literal['video_0', 'video_1']]
     sub_preferences: NotRequired[SubPreference]
-    info: NotRequired[dict[str, str]]
 
 
 def format_video_pair_sample_from_dict(data: dict) -> VideoPairSample:
@@ -270,7 +264,6 @@ def format_video_pair_sample_from_dict(data: dict) -> VideoPairSample:
         helpfulness=data.get('helpfulness'),
         harmlessness=data.get('harmlessness'),
         sub_preferences=sub_preferences,
-        info=data.get('info', {}),
     )
 
 

@@ -11,6 +11,7 @@
 
 <!-- [[`📕 Paper`](https://arxiv.org/abs/2307.04657)] -->
 [[`🏠 Project Homepage`](https://sites.google.com/view/safe-sora)]
+[[`📕 Paper`](https://arxiv.org/abs/2406.14477)]
 [[`🤗 SafeSora Datasets`](https://huggingface.co/datasets/PKU-Alignment/SafeSora)]
 [[`🤗 SafeSora Label`](https://huggingface.co/datasets/PKU-Alignment/SafeSora-Label)]
 [[`🤗 SafeSora Evaluation`](https://huggingface.co/datasets/PKU-Alignment/SafeSora-Eval)]
@@ -140,11 +141,13 @@ eval_data = PromptDataset.load("path/to/config", video_dir="path/to/video_dir")
 If you find the SafeSora dataset family useful in your research, please cite the following paper:
 
 ```bibtex
-@article{SafeSora2024,
-  title   = {SafeSora: Towards Safety Alignment of Text2Video Generation via a Human Preference Dataset},
-  author  = {Josef Dai and Tianle Chen and Xuyao Wang and Ziran Yang and Taiye Chen and Jiaming Ji and Yaodong Yang},
-  url     = {https://github.com/calico-1226/safe-sora},
-  year    = {2024}
+@misc{dai2024safesora,
+      title={SafeSora: Towards Safety Alignment of Text2Video Generation via a Human Preference Dataset},
+      author={Josef Dai and Tianle Chen and Xuyao Wang and Ziran Yang and Taiye Chen and Jiaming Ji and Yaodong Yang},
+      year={2024},
+      eprint={2406.14477},
+      archivePrefix={arXiv},
+      primaryClass={id='cs.CV' full_name='Computer Vision and Pattern Recognition' is_active=True alt_name=None in_archive='cs' is_general=False description='Covers image processing, computer vision, pattern recognition, and scene understanding. Roughly includes material in ACM Subject Classes I.2.10, I.4, and I.5.'}
 }
 ```
 
