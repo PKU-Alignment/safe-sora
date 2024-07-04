@@ -9,11 +9,10 @@ ignore =
     # W503: line break before binary operator
     # W504: line break after binary operator
     # format by black
-    E203,E241,E704,W503,W504,
+    E203,E241,E704,W503,W504,E501,W505,
     # E501: line too long
     # W505: doc line too long
     # too long docstring due to long example blocks
-    E501,W505,
 per-file-ignores =
     # F401: module imported but unused
     # intentionally unused imports

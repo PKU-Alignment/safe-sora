@@ -1,9 +1,10 @@
 ##### Project Specification #####
-dataset/
 outputs/
 wandb/
 test/
 data/
+checkpoints/
+cache_dir
 
 ##### Python.gitignore #####
 # Byte-compiled / optimized / DLL files

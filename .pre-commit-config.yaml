@@ -33,6 +33,11 @@ repos:
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
+        exclude: |
+          (?x)(
+            ^safe_sora/models/multimodal_encoder/|
+            ^safe_sora/models/multimodal_projector/
+          )
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2
     hooks:
@@ -68,6 +73,8 @@ repos:
   - repo: local
     hooks:
       - id: pylint
+        args:
+          - --disable=R0801
         name: pylint
         entry: pylint
         language: system
@@ -78,5 +85,8 @@ repos:
             ^examples/|
             ^tests/|
             ^setup.py$|
+            ^safe_sora/models/multimodal_encoder/|
+            ^safe_sora/models/multimodal_projector/|
+            ^safe_sora/models/video_llava.py|
             ^docs/source/conf.py$
           )

@@ -199,7 +199,7 @@ class SubPreference(TypedDict, total=False):
 
     instruction_following: NotRequired[Literal['video_0', 'video_1']]
     correctness: NotRequired[Literal['video_0', 'video_1']]
-    information: NotRequired[Literal['video_0', 'video_1']]
+    informativeness: NotRequired[Literal['video_0', 'video_1']]
     aesthetics: NotRequired[Literal['video_0', 'video_1']]
 
 
@@ -214,7 +214,7 @@ def format_sub_preference_from_dict(data: dict) -> SubPreference:
     return SubPreference(
         instruction_following=data.get('instruction_following'),
         correctness=data.get('correctness'),
-        information=data.get('information'),
+        informativeness=data.get('informativeness'),
         aesthetics=data.get('aesthetics'),
     )
 
