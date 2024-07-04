@@ -38,6 +38,16 @@ dependencies = [
     "transformers",
     "datasets",
     "tokenizers",
+    "accelerate",
+    "deepspeed",
+    "bitsandbytes",
+    "numpy",
+    "sentencepiece",
+    "wandb",
+    "tensorboard",
+    "matplotlib",
+    "tqdm",
+    "rich",
     "av",
 ]
 dynamic = ["version"]
@@ -168,6 +178,7 @@ ignore = [
     # S101: use of `assert` detected
     # internal use and may never raise at runtime
     "S101",
+    "S105",
     # PLR0402: use from {module} import {name} in lieu of alias
     # use alias for import convention (e.g., `import torch.nn as nn`)
     "PLR0402",

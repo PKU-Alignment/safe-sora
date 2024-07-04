@@ -3,7 +3,7 @@ PROJECT_NAME   = safe-sora
 COPYRIGHT      = "PKU-Alignment Team. All Rights Reserved."
 PROJECT_PATH   = safe_sora
 SHELL          = /bin/bash
-SOURCE_FOLDERS = $(PROJECT_PATH) examples tests docs
+SOURCE_FOLDERS = $(PROJECT_PATH) examples docs
 PYTHON_FILES   = $(shell find $(SOURCE_FOLDERS) -type f -name "*.py" -o -name "*.pyi")
 COMMIT_HASH    = $(shell git log -1 --format=%h)
 PATH           := $(HOME)/go/bin:$(PATH)
@@ -130,7 +130,7 @@ pre-commit: pre-commit-install
 # Documentation
 
 addlicense: addlicense-install
-	addlicense -c $(COPYRIGHT) -ignore tests/coverage.xml -l apache -y 2022-$(shell date +"%Y") -check $(SOURCE_FOLDERS)
+	addlicense -c $(COPYRIGHT) -ignore **/multimodal_encoder/** -ignore **/multimodal_projector/** -l apache -y 2022-$(shell date +"%Y") -check $(SOURCE_FOLDERS)
 
 docstyle: docs-install
 	make -C docs clean
