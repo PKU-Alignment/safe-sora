@@ -30,7 +30,12 @@ Furthermore, we utilize these models to evaluate four open-source models on our 
 
 ## Training
 
-First, you need to [download our dataset](../README.md#data-access) to local and prepare the training environment.
+First, you need to [download our dataset](../README.md#data-access) to local and prepare the training environment using:
+
+```bash
+conda env create -f conda-recipe.yaml  # mamba env create -f conda-recipe.yaml
+conda activate safe-sora
+```
 
 Then, you need to download the Video-LLaVA model and the MM-MLP adapter from the Hugging Face model hub. For example, you can download them use the following commands:
 

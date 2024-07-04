@@ -38,6 +38,16 @@ dependencies = [
     "transformers",
     "datasets",
     "tokenizers",
+    "accelerate",
+    "deepspeed",
+    "bitsandbytes",
+    "numpy",
+    "sentencepiece",
+    "wandb",
+    "tensorboard",
+    "matplotlib",
+    "tqdm",
+    "rich",
     "av",
 ]
 dynamic = ["version"]

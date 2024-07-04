@@ -20,8 +20,10 @@
 
 """Reward Trainer for training the model with the reward signal."""
 
+from __future__ import annotations
+
 import os
-from typing import Any, Dict, Generator, Iterator, List, Optional, Tuple, Union
+from typing import Any, Generator, Iterator
 
 import bitsandbytes
 import torch
@@ -61,9 +63,9 @@ def maybe_zero_3(
 
 
 def get_mm_adapter_state_maybe_zero_3(
-    named_params: List[Tuple[str, torch.Tensor]],
-    keys_to_match: List[str],
-) -> Dict[str, torch.Tensor]:
+    named_params: list[tuple[str, torch.Tensor]],
+    keys_to_match: list[str],
+) -> dict[str, torch.Tensor]:
     """Get the state of the adapter with zero stage 3."""
     to_return = {
         k: t for k, t in named_params if any(key_match in k for key_match in keys_to_match)
@@ -72,10 +74,10 @@ def get_mm_adapter_state_maybe_zero_3(
 
 
 def split_to_even_chunks(
-    indices: List[int],
+    indices: list[int],
     lengths: list[int],
     num_chunks: int,
-) -> List[List[int]]:
+) -> list[list[int]]:
     """Split a list of indices into `chunks` chunks of roughly equal lengths."""
 
     if len(indices) % num_chunks != 0:
@@ -97,11 +99,11 @@ def split_to_even_chunks(
 
 # pylint: disable=too-many-locals
 def get_modality_length_grouped_indices(
-    lengths: List[int],
+    lengths: list[int],
     batch_size: int,
     world_size: int,
     generator: Generator | None = None,
-) -> List[int]:
+) -> list[int]:
     """Get indices grouped by modality and length."""
     # We need to use torch for the random part
     # as a distributed sampler will set the random seed for torch.
@@ -144,11 +146,11 @@ def get_modality_length_grouped_indices(
 
 
 def get_length_grouped_indices(
-    lengths: List[int],
+    lengths: list[int],
     batch_size: int,
     world_size: int,
     generator: Generator | None = None,
-) -> List[int]:
+) -> list[int]:
     """Get indices grouped by length."""
     # We need to use torch for the random part
     # as a distributed sampler will set the random seed for torch.
@@ -178,7 +180,7 @@ class LengthGroupedSampler(Sampler):
         self,
         batch_size: int,
         world_size: int,
-        lengths: Optional[List[int]] = None,
+        lengths: list[int] | None = None,
         generator: Generator | None = None,
         group_by_modality: bool = False,
     ) -> None:
@@ -215,7 +217,7 @@ class LengthGroupedSampler(Sampler):
 class RewardTrainer(Trainer):
     """Reward Trainer for training the model with the reward signal."""
 
-    def _get_train_sampler(self) -> Optional[torch.utils.data.Sampler]:
+    def _get_train_sampler(self) -> torch.utils.data.Sampler | None:
         if self.train_dataset is None or not has_length(self.train_dataset):
             return None
 
@@ -370,7 +372,7 @@ class RewardTrainer(Trainer):
         else:
             super()._save_checkpoint(model, trial, metrics)  # pylint: disable=no-member
 
-    def _save(self, output_dir: Optional[str] = None, state_dict: bool | None = None) -> None:
+    def _save(self, output_dir: str | None = None, state_dict: bool | None = None) -> None:
         if getattr(self.args, 'tune_mm_mlp_adapter', False):
             pass
         else:
@@ -381,7 +383,7 @@ class RewardTrainer(Trainer):
         model: Any,
         inputs: torch.Tensor,
         return_outputs: bool = False,
-    ) -> Union[float, Tuple[float, Any]]:
+    ) -> float | tuple[float, Any]:
         assert inputs['input_ids'].size(0) % 2 == 0, 'Batch size should be even.'
 
         outputs: ScoreModelOutput = model(**inputs)
@@ -401,10 +403,10 @@ class RewardTrainer(Trainer):
     def prediction_step(
         self,
         model: nn.Module,
-        inputs: Dict[str, Union[torch.Tensor, Any]],
+        inputs: dict[str, torch.Tensor | Any],
         prediction_loss_only: bool,  # pylint: disable=unused-argument
-        ignore_keys: Optional[List[str]] = None,  # pylint: disable=unused-argument
-    ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]:
+        ignore_keys: list[str] | None = None,  # pylint: disable=unused-argument
+    ) -> tuple[torch.Tensor | None, torch.Tensor | None, torch.Tensor | None]:
 
         inputs = self._prepare_inputs(inputs)
 

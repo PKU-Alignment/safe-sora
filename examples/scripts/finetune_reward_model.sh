@@ -20,18 +20,39 @@ if [ -z "${BASH_VERSION}" ]; then
     exit 1
 fi
 
-DIMENSION="helpfulness"
-
-IMAGE_FOLDER="./SafeSora/videos"
-VIDEO_FOLDER="./SafeSora/videos"
-
+VIDEO_DIR="./SafeSora/videos"
+TRAIN_DATA_PATH="./SafeSora/config-train.json.gz"
+EVAL_DATA_PATH="./SafeSora/config-test.json.gz"
 MODEL_NAME_OR_PATH="LanguageBind/Video-LLaVA-7B"
 MM_MLP_ADAPTER_PATH="LanguageBind/Video-LLaVA-Pretrain-7B/mm_projector.bin"
+OUTPUT_DIR="./outputs"
+DIMENSION="helpfulness"
 
 while [[ "$#" -gt 0 ]]; do
     arg="$1"
     shift
     case "${arg}" in
+    --video_dir)
+        VIDEO_DIR="$1"
+        shift
+        ;;
+    --video_dir=*)
+        VIDEO_DIR="${arg#*=}"
+        ;;
+    --train_data_path)
+        TRAIN_DATA_PATH="$1"
+        shift
+        ;;
+    --train_data_path=*)
+        TRAIN_DATA_PATH="${arg#*=}"
+        ;;
+    --eval_data_path)
+        EVAL_DATA_PATH="$1"
+        shift
+        ;;
+    --eval_data_path=*)
+        EVAL_DATA_PATH="${arg#*=}"
+        ;;
     --model_name_or_path)
         MODEL_NAME_OR_PATH="$1"
         shift
@@ -72,6 +93,7 @@ if [[ ! "helpfulness harmlessness instruction_following correctness informativen
     exit 1
 fi
 
+IMAGE_DIR="${VIDEO_DIR}"
 RUN_NAME="reward-${DIMENSION}"
 OUTPUT_DIR="${OUTPUT_DIR}/${RUN_NAME}"
 
@@ -99,11 +121,11 @@ deepspeed --master_port="${MASTER_PORT}" examples/reward_model/train_reward.py \
     --version v1 \
     --run_name "${RUN_NAME}" \
     --model_name_or_path "${MODEL_NAME_OR_PATH}" \
-    --train_data_path /data/SafeSora/config-train.json.gz \
-    --eval_data_path /data/SafeSora/config-test.json.gz \
+    --train_data_path "${TRAIN_DATA_PATH}" \
+    --eval_data_path "${EVAL_DATA_PATH}" \
     --preference_dimension "${DIMENSION}" \
-    --image_dir "${IMAGE_FOLDER}" \
-    --video_dir "${VIDEO_FOLDER}" \
+    --image_dir "${IMAGE_DIR}" \
+    --video_dir "${VIDEO_DIR}" \
     --image_tower LanguageBind/LanguageBind_Image \
     --video_tower LanguageBind/LanguageBind_Video_merge \
     --mm_projector_type mlp2x_gelu \
@@ -137,8 +159,7 @@ deepspeed --master_port="${MASTER_PORT}" examples/reward_model/train_reward.py \
     --tokenizer_model_max_length 3072 \
     --gradient_checkpointing True \
     --dataloader_num_workers 4 \
-    --lazy_preprocess True \
     --report_to wandb \
     --bf16 True \
     --tf32 True \
-    --num_frames 3
+    --num_frames 8
