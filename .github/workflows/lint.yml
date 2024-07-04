@@ -44,22 +44,6 @@ jobs:
         run: |
           make pre-commit
 
-      - name: ruff
-        run: |
-          make ruff
-
-      - name: flake8
-        run: |
-          make flake8
-
-      - name: pylint
-        run: |
-          make pylint
-
-      - name: isort and black
-        run: |
-          make py-format
-
       - name: addlicense
         run: |
           make addlicense
