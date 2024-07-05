@@ -35,7 +35,11 @@ First, you need to [download our dataset](../README.md#data-access) to local and
 ```bash
 conda env create -f conda-recipe.yaml  # mamba env create -f conda-recipe.yaml
 conda activate safe-sora
-```
+
+$$
+\mathcal{L} (\phi; \mathcal{D}) = -\mathbb{E}_{(x,y_w,y_l)\sim \mathcal{D}} \left[\log \sigma (R_{\phi} (y_w,x) - R_{\phi} (y_l,x))\right]
+$$
+
 
 Then, you need to download the Video-LLaVA model and the MM-MLP adapter from the Hugging Face model hub. For example, you can download them use the following commands:
 
@@ -61,3 +65,7 @@ where `<your-model-name-or-checkpoint-path>` is the name of the Video-LLaVA mode
 ## Acknowledgements
 
 This implementation benefits from [DeepSpeed](https://github.com/microsoft/DeepSpeed), [Transformers](https://github.com/huggingface/transformers), [LLaVA](https://github.com/haotian-liu/LLaVA), and [Video-LLaVA](https://github.com/PKU-YuanGroup/Video-LLaVA). Thanks for their wonderful works and their efforts for democratizing the LLM research.
+
+```
+
+```
