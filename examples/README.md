@@ -48,15 +48,31 @@ Then, you can run the following script to train the reward model on the SafeSora
 
 ```bash
 bash examples/scripts/finetune_reward_model.sh \
+    --video_dir <your-video-dir> \
+    --train_data_path <your-train-data-path> \
+    --eval_data_path <your-eval-data-path> \
     --model_name_or_path <your-model-name-or-checkpoint-path> \
     --mm_mlp_adapter_path <your-mm_mlp_adapter_path> \
-    --dimension <the-target-dimension-to-train> \
-    --output_dir examples/outputs/reward-model
+    --output_dir <output-directory> \
+    --dimension <the-target-dimension-to-train>
 ```
 
-where `<your-model-name-or-checkpoint-path>` is the name of the Video-LLaVA model or the path to the checkpoint directory, `<your-mm_mlp_adapter_path>` is the path to the `mm_projector.bin` file, and `<the-target-dimension-to-train>` is the preference dimension that the reward model will predict.
+where `<your-video-dir>` is the path to the directory containing the video files, `<your-train-data-path>` and `<your-eval-data-path>` are the paths to the training and evaluation data files, `<your-model-name-or-checkpoint-path>` is the name of the Video-LLaVA model or the path to the checkpoint directory, `<your-mm_mlp_adapter_path>` is the path to the `mm_projector.bin` file, and `<the-target-dimension-to-train>` is the preference dimension that the reward model will predict.
 
 **NOTE:** The parameter 'dimension' specifies the preference dimension that the reward model will predict. The SafeSora dataset currently supports the following dimensions: `helpfulness`, `harmlessness`, `instruction_following`, `correctness`, `informativeness`, and `aesthetics`. For the detailed information of the different dimensions, please refer to our [paper](https://arxiv.org/abs/2406.14477).
+
+For example, preference dataset is placed in `data/SafeSora`, the Video-LLaVA model is downloaded to `models/LanguageBind/Video-LLaVA-7B`, and the MM-MLP adapter is downloaded to `models/LanguageBind/Video-LLaVA-Pretrain-7B`, you can run the following command to train the reward model on the `helpfulness` dimension:
+
+```bash
+bash examples/scripts/finetune_reward_model.sh \
+    --video_dir data/SafeSora/videos \
+    --train_data_path data/SafeSora/config-train.json.gz \
+    --eval_data_path data/SafeSora/config-test.json.gz \
+    --model_name_or_path models/LanguageBind/Video-LLaVA-7B \
+    --mm_mlp_adapter_path models/LanguageBind/Video-LLaVA-Pretrain-7B/mm_projector.bin \
+    --output_dir ./outputs \
+    --dimension helpfulness
+```
 
 ## Acknowledgements
 

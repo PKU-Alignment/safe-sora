@@ -5,6 +5,7 @@ test/
 data/
 checkpoints/
 cache_dir
+experiments/
 
 ##### Python.gitignore #####
 # Byte-compiled / optimized / DLL files
