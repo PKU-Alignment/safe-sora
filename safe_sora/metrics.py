@@ -16,6 +16,7 @@
 """Traditional metrics for video generation."""
 
 import os
+from functools import partial
 
 import clip  # pylint: disable=import-error
 import cv2
@@ -24,6 +25,9 @@ import numpy as np
 import torch
 from PIL import Image
 from skimage.metrics.simple_metrics import peak_signal_noise_ratio as psnr
+from tqdm import tqdm
+
+from safe_sora.datasets.pair import PairDataset
 
 
 def extract_frames(video_path: str) -> tuple:
@@ -45,8 +49,9 @@ def extract_frames(video_path: str) -> tuple:
     return all_frames, frame_count
 
 
-def psnr_reward(video_path: str) -> float:
+def psnr_reward(video_config: dict) -> float:
     """Calculate the average PSNR of a video."""
+    video_path = video_config['video_path']
     frames, frame_num = extract_frames(video_path)
     image_0 = cv2.cvtColor(frames[0], cv2.COLOR_BGR2RGB)  # pylint: disable=no-member
     psnr_sum = 0
@@ -56,8 +61,12 @@ def psnr_reward(video_path: str) -> float:
     return psnr_sum / frame_num
 
 
-def hpsv2_reward(prompt: str, video_path: str, cache_dir: str, sample_rate: int = 1) -> float:
+def hpsv2_reward(video_config: dict, cache_dir: str, sample_rate: int = 1) -> float:
     """Calculate the average HPSv2 score of a video."""
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+    video_path = video_config['video_path']
+    prompt = video_config['prompt_text']
     reward = []
     temp_save_path = os.path.join(cache_dir, 'temp.png')
     frames, frame_num = extract_frames(video_path)
@@ -80,14 +89,43 @@ class ClipReward:  # pylint: disable=too-few-public-methods
         self.model, self.preprocess = clip.load('ViT-B/32', device=self.device)
         print('device:', self.device)
 
-    def __call__(self, prompt: str, video_path: str) -> float:
+    def __call__(self, video_config: dict) -> float:
+        video_path = video_config['video_path']
+        prompt = video_config['prompt_text']
         frames, _ = extract_frames(video_path)
         text = clip.tokenize(prompt, truncate=True).to(self.device)
         reward = []
-        for i in len(frames):
-            image = Image.fromarray(frames[i])
+        for frame in frames:
+            image = Image.fromarray(frame)
             image = self.preprocess(image).unsqueeze(0).to(self.device)
             with torch.no_grad():
                 logits_per_image, _ = self.model(image, text)
             reward.append(logits_per_image[0][0].item())
         return np.mean(reward)
+
+
+def evaluate(
+    dataset: PairDataset,
+    evaluation_mode: str,
+    cache_dir: str = './outputs/.cache',
+) -> PairDataset:
+    """Evaluate the dataset with the given evaluation mode."""
+
+    if dataset.check_video_integrity() > 0:
+        raise ValueError('Some videos are corrupted.')
+
+    try:
+        evaluate_fn = {
+            'psnr': psnr_reward,
+            'clip': ClipReward('cuda'),
+            'hpsv2': partial(hpsv2_reward, cache_dir=cache_dir, sample_rate=0.1),
+        }[evaluation_mode]
+    except KeyError as e:
+        raise ValueError('`evaluation_mode` should be one of "psnr", "clip" or "hpsv2"') from e
+
+    for item in tqdm(dataset):
+        for video in [item['video_0'], item['video_1']]:
+            if 'metrics' not in video:
+                video['metrics'] = {}
+            video['metrics'][evaluation_mode] = evaluate_fn(video)
+    return dataset

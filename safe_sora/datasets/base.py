@@ -430,7 +430,7 @@ class BaseDataset(Dataset):
         """Check if the dataset is complete, i.e., all values are not None."""
         return all(is_complete(config) for config in self.configs)
 
-    def check_video_integrity(self) -> None:
+    def check_video_integrity(self) -> int:
         """Check if videos are corrupted"""
 
         has_checked_path = set()
@@ -456,6 +456,8 @@ class BaseDataset(Dataset):
             tqdm_bar.set_description(f'Number of corrupted videos: {num_corrupted_videos}')
             tqdm_bar.update(1)
         tqdm_bar.close()
+
+        return num_corrupted_videos
 
     def shuffle(self) -> None:
         """Shuffle the dataset"""
