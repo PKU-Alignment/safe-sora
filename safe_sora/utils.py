@@ -14,6 +14,11 @@
 # ==============================================================================
 """Utility functions for SafeSora."""
 
+from __future__ import annotations
+
+import hashlib
+import json
+
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -39,3 +44,13 @@ def order_pick_k(lst: list, k: int) -> list:
     new_lst = [lst[i] for i in index_sort]
     print(f'WARNING: total file: {len(lst)}, random pick: {k}. (ignored)')
     return new_lst
+
+
+def generate_hash_uid(to_hash: dict | tuple | list | str) -> str:
+    """Generates a unique hash for a given model and arguments."""
+    # Convert the dictionary to a JSON string
+    json_string = json.dumps(to_hash, sort_keys=True)
+
+    # Generate a hash of the JSON string
+    hash_object = hashlib.sha256(json_string.encode())
+    return hash_object.hexdigest()
