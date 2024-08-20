@@ -49,6 +49,8 @@ dependencies = [
     "tqdm",
     "rich",
     "av",
+    "opencv-python",
+    "scikit-image",
 ]
 dynamic = ["version"]
 

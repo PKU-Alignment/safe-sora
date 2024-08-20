@@ -1,14 +1,29 @@
+# Copyright 2024 PKU-Alignment Team. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ==============================================================================
+
 """Traditional metrics for video generation."""
 
 import os
 
-import clip
+import clip  # pylint: disable=import-error
 import cv2
-import hpsv2
+import hpsv2  # pylint: disable=import-error
 import numpy as np
 import torch
 from PIL import Image
-from skimage.metrics import peak_signal_noise_ratio as psnr  # pylint: disable=no-name-in-module
+from skimage.metrics.simple_metrics import peak_signal_noise_ratio as psnr
 
 
 def extract_frames(video_path: str) -> tuple:
@@ -30,7 +45,7 @@ def extract_frames(video_path: str) -> tuple:
     return all_frames, frame_count
 
 
-def get_psnr(video_path: str) -> float:
+def psnr_reward(video_path: str) -> float:
     """Calculate the average PSNR of a video."""
     frames, frame_num = extract_frames(video_path)
     image_0 = cv2.cvtColor(frames[0], cv2.COLOR_BGR2RGB)  # pylint: disable=no-member
